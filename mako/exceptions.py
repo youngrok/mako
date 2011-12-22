@@ -177,6 +177,18 @@ class RichTraceback(object):
                 template_line = template_lines[template_ln - 1]
             else:
                 template_line = None
+            
+            # calculate line number offset for python block
+            lineno_offset = 0
+            if template_line.startswith('<%'):
+                while line_map[lineno - lineno_offset] == template_ln:
+                    lineno_offset += 1
+                template_ln = template_ln + lineno_offset - 1
+                if template_ln <= len(template_lines):
+                    template_line = template_lines[template_ln - 1]
+                else:
+                    template_line = None
+
             new_trcback.append((filename, lineno, function, 
                                 line, template_filename, template_ln, 
                                 template_line, template_source))
